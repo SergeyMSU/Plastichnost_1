@@ -173,7 +173,7 @@ double f1(const double& u1, const double& u2, const double& u3, const double& dx
     double dyExz = 0.5 * ddxyu3;
     double dxEyz = 0.5 * ddxyu3;
     double dyEyz = 0.5 * ddyyu3;
-
+    
     //cout << gam << endl;
     if (dev_mode)
     {
