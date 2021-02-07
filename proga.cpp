@@ -1055,10 +1055,10 @@ int main()
         if(true)// Углы
         {
         // правый верхний угол
-        /*nx = an;
-        ny = an;*/
-        nx = 0.0;
-        ny = 1.0;
+        nx = an;
+        ny = an;
+        /*nx = 0.0;
+        ny = 1.0;*/
         if (true)
         {
             int i = N - 1;
@@ -1800,7 +1800,46 @@ int main()
             }
         }
 
-
+        // берем точки границы с верхнего слоя
+        if (true)
+        {
+            for (int j = 0; j < M; j++)
+            {
+                u1[0][j] = uu1[0][j];
+                u2[0][j] = uu2[0][j];
+                u3[0][j] = uu3[0][j];
+            }
+            for (int j = 0; j < M; j++)
+            {
+                u1[N - 1][j] = uu1[N - 1][j];
+                u2[N - 1][j] = uu2[N - 1][j];
+                u3[N - 1][j] = uu3[N - 1][j];
+            }
+            for (int i = 0; i < N; i++)
+            {
+                u1[i][0] = uu1[i][0];
+                u2[i][0] = uu2[i][0];
+                u3[i][0] = uu3[i][0];
+            }
+            for (int i = 0; i < N; i++)
+            {
+                u1[i][M - 1] = uu1[i][M - 1];
+                u2[i][M - 1] = uu2[i][M - 1];
+                u3[i][M - 1] = uu3[i][M - 1];
+            }
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < M; j++)
+                {
+                    if (IF[i][j] == true)
+                    {
+                        u1[i][j] = uu1[i][j];
+                        u2[i][j] = uu2[i][j];
+                        u3[i][j] = uu3[i][j];
+                    }
+                }
+            }
+        }
        
 
         // Пишем уравнения
