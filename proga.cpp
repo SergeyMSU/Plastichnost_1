@@ -1098,13 +1098,14 @@ int main()
                         FF2(gam) * AAk * Al * E * nx);
                     t2 = pow(E0, Al - 2.0) * (-c23 * FF1(gam) * AAk * Al * (0.5 * (dyu1 + dxu2) * nx + dyu2 * ny - E * ny / 3.0) - //
                         FF2(gam) * AAk * Al * E * ny);
-                    t3 = pow(E0, Al - 2.0) * (-c23) * FF1(gam) * AAk * Al * 0.5 * (dxu3 * nx + dyu3 * ny);
+                    t3 = pow(E0, Al - 2.0) * (-c23 * FF1(gam) * AAk * Al * 0.5 * (dxu3 * nx + dyu3 * ny));
                 }
             }
 
-            uu1[i][j] = (-t1 + a * u1[i][j - 1] / 2.0 / dy - a * (u2[i][j] - u2[i - 1][j]) / 2.0 / dx) / (a / 2.0 / dy);
+
+            /*uu1[i][j] = (-t1 + a * u1[i][j - 1] / 2.0 / dy - a * (u2[i][j] - u2[i - 1][j]) / 2.0 / dx) / (a / 2.0 / dy);
             uu2[i][j] = (-t2 + (a + b) * u2[i][j - 1] / dy - b * (u1[i][j] - u1[i - 1][j]) / dx) / ((a + b) / dy);
-            uu3[i][j] = (F - t3 + a * u3[i][j - 1] / dy / 2.0) / (a / 2.0 / dy);
+            uu3[i][j] = (F - t3 + a * u3[i][j - 1] / dy / 2.0) / (a / 2.0 / dy);*/
 
             //double E = dxu1 + dyu2;
             //double E0 = sqrt(c49 * (kv(dxu1) + kv(dyu2) - dxu1 * dyu2) + c13 * (kv(dyu1) + kv(dxu2) + 2.0 * dyu1 * dxu2 + kv(dxu3) + kv(dyu3)));
@@ -1140,20 +1141,20 @@ int main()
 
 
 
-            //double a1 = +k1 + k2 + k3;
-            //double b1 = +k4 + k5;
-            //double ff1 = -((-k6 - k7) * u1[i - 1][j] - k8 * u2[i - 1][j] - k9 * u1[i][j - 1] - k10 * u2[i][j - 1]) - t1;
+            double a1 = +k1 + k2 + k3;
+            double b1 = +k4 + k5;
+            double ff1 = -((-k6 - k7) * u1[i - 1][j] - k8 * u2[i - 1][j] - k9 * u1[i][j - 1] - k10 * u2[i][j - 1]) - t1;
 
-            //double a2 = +l1 + l2;
-            //double b2 = +l3 + l4 + l5;
-            //double ff2 = -(-l6 * u1[i - 1][j] - l7 * u2[i - 1][j] - l8 * u1[i][j - 1] + (-l9 - l10) * u2[i][j - 1]) - t2;
+            double a2 = +l1 + l2;
+            double b2 = +l3 + l4 + l5;
+            double ff2 = -(-l6 * u1[i - 1][j] - l7 * u2[i - 1][j] - l8 * u1[i][j - 1] + (-l9 - l10) * u2[i][j - 1]) - t2;
 
             ///*uu1[i][j] = (b2 * ff1 - b1 * ff2) / (a1 * b2 - b1 * a2);
             //uu2[i][j] = (a2 * ff1 - a1 * ff2) / (b1 * a2 - b2 * a1);*/
-            //uu1[i][j] = (ff1 - b1 * u2[i][j]) / a1;
-            //uu2[i][j] = (ff2 - a2 * u1[i][j]) / b2;
+            uu1[i][j] = (ff1 - b1 * u2[i][j]) / a1;
+            uu2[i][j] = (ff2 - a2 * u1[i][j]) / b2;
 
-            //uu3[i][j] = (-t3 - (-s3 * u3[i - 1][j] - s4 * u3[i][j - 1])) / (+s1 + s2);
+            uu3[i][j] = (-t3 - (-s3 * u3[i - 1][j] - s4 * u3[i][j - 1])) / (+s1 + s2);
         }
 
 
@@ -1800,69 +1801,7 @@ int main()
         }
 
 
-        //#pragma omp parallel 
-        //{
-        //    #pragma omp for
-        //    for (int dd = 0; dd < K; dd++)
-        //    {
-        //        int i = dd % N; // номер ячейки по x (от 0)
-        //        int j = (dd - i) / N;
-        //        if (IF[i][j] == false && j >= 1 && j < M - 1 && i >= 1 && i < N - 1)
-        //        {
-        //            dxu1 = (u1[i + 1][j] - u1[i - 1][j]) / (2.0 * dx);
-        //            dxu2 = (u2[i + 1][j] - u2[i - 1][j]) / (2.0 * dx);
-        //            dxu3 = (u3[i + 1][j] - u3[i - 1][j]) / (2.0 * dx);
-        //            dyu1 = (u1[i][j + 1] - u1[i][j - 1]) / (2.0 * dy);
-        //            dyu2 = (u2[i][j + 1] - u2[i][j - 1]) / (2.0 * dy);
-        //            dyu3 = (u3[i][j + 1] - u3[i][j - 1]) / (2.0 * dy);
-        //            ddxxu1 = (u1[i + 1][j] - 2 * u1[i][j] + u1[i - 1][j]) / (kv(dx));
-        //            ddxxu2 = (u2[i + 1][j] - 2 * u2[i][j] + u2[i - 1][j]) / (kv(dx));
-        //            ddxxu3 = (u3[i + 1][j] - 2 * u3[i][j] + u3[i - 1][j]) / (kv(dx));
-        //            ddyyu1 = (u1[i][j + 1] - 2 * u1[i][j] + u1[i][j - 1]) / (kv(dy));
-        //            ddyyu2 = (u2[i][j + 1] - 2 * u2[i][j] + u2[i][j - 1]) / (kv(dy));
-        //            ddyyu3 = (u3[i][j + 1] - 2 * u3[i][j] + u3[i][j - 1]) / (kv(dy));
-        //            ddxyu1 = (u1[i + 1][j + 1] - u1[i + 1][j - 1] - u1[i - 1][j + 1] + u1[i - 1][j - 1]) / (4.0 * dx * dy);
-        //            ddxyu2 = (u2[i + 1][j + 1] - u2[i + 1][j - 1] - u2[i - 1][j + 1] + u2[i - 1][j - 1]) / (4.0 * dx * dy);
-        //            ddxyu3 = (u3[i + 1][j + 1] - u3[i + 1][j - 1] - u3[i - 1][j + 1] + u3[i - 1][j - 1]) / (4.0 * dx * dy);
-
-        //            if (step > St2)
-        //            {
-        //                uu1[i][j] = (f1(u1[i][j], u2[i][j], u3[i][j], dxu1, dxu2, dxu3, dyu1, dyu2, dyu3, ddxxu1, ddxxu2, ddxxu3, //
-        //                    ddyyu1, ddyyu2, ddyyu3, ddxyu1, ddxyu2, ddxyu3) + B1 * u1[i + 1][j] + C1 * u2[i + 1][j - 1] + D1 * u1[i][j - 1] + //
-        //                    E1 * u2[i - 1][j - 1] + F1 * u1[i - 1][j] + G1 * u2[i - 1][j + 1] + H1 * u1[i][j + 1] + I1 * u2[i + 1][j + 1]) / A1;
-        //                delta = max(delta, fabs(uu1[i][j] - u1[i][j]));
-
-        //                uu2[i][j] = (f2(u1[i][j], u2[i][j], u3[i][j], dxu1, dxu2, dxu3, dyu1, dyu2, dyu3, ddxxu1, ddxxu2, ddxxu3, //
-        //                    ddyyu1, ddyyu2, ddyyu3, ddxyu1, ddxyu2, ddxyu3) + B2 * u2[i + 1][j] + C2 * u1[i + 1][j - 1] + D2 * u2[i][j - 1] + //
-        //                    E2 * u1[i - 1][j - 1] + F2 * u2[i - 1][j] + G2 * u1[i - 1][j + 1] + H2 * u2[i][j + 1] + I1 * u1[i + 1][j + 1]) / A2;
-        //                delta = max(delta, fabs(uu2[i][j] - u2[i][j]));
-
-        //                uu3[i][j] = (f3(u1[i][j], u2[i][j], u3[i][j], dxu1, dxu2, dxu3, dyu1, dyu2, dyu3, ddxxu1, ddxxu2, ddxxu3, //
-        //                    ddyyu1, ddyyu2, ddyyu3, ddxyu1, ddxyu2, ddxyu3) + B3 * u3[i + 1][j] + C3 * u3[i + 1][j - 1] + D3 * u3[i][j - 1] + //
-        //                    E3 * u3[i - 1][j - 1] + F3 * u3[i - 1][j] + G3 * u3[i - 1][j + 1] + H3 * u3[i][j + 1] + I3 * u3[i + 1][j + 1]) / A3;
-        //                delta = max(delta, fabs(uu3[i][j] - u3[i][j]));
-        //            }
-        //            else
-        //            {
-        //                uu1[i][j] = (B1 * u1[i + 1][j] + C1 * u2[i + 1][j - 1] + D1 * u1[i][j - 1] + //
-        //                    E1 * u2[i - 1][j - 1] + F1 * u1[i - 1][j] + G1 * u2[i - 1][j + 1] + H1 * u1[i][j + 1] + I1 * u2[i + 1][j + 1]) / A1;
-
-        //                delta = max(delta, fabs(uu1[i][j] - u1[i][j]));
-
-        //                uu2[i][j] = (B2 * u2[i + 1][j] + C2 * u1[i + 1][j - 1] + D2 * u2[i][j - 1] + //
-        //                    E2 * u1[i - 1][j - 1] + F2 * u2[i - 1][j] + G2 * u1[i - 1][j + 1] + H2 * u2[i][j + 1] + I1 * u1[i + 1][j + 1]) / A2;
-        //                delta = max(delta, fabs(uu2[i][j] - u2[i][j]));
-
-        //                uu3[i][j] = (B3 * u3[i + 1][j] + C3 * u3[i + 1][j - 1] + D3 * u3[i][j - 1] + //
-        //                    E3 * u3[i - 1][j - 1] + F3 * u3[i - 1][j] + G3 * u3[i - 1][j + 1] + H3 * u3[i][j + 1] + I3 * u3[i + 1][j + 1]) / A3;
-        //                delta = max(delta, fabs(uu3[i][j] - u3[i][j]));
-        //            }
-        //        }
-        //    
-        //    }
-
-        //}
-
+       
 
         // Пишем уравнения
         if (true)
